@@ -24,6 +24,7 @@ namespace ReportService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            //todo DI and tests
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
