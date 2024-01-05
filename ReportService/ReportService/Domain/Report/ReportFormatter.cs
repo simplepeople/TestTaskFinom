@@ -11,7 +11,7 @@ namespace ReportService.Domain.Report
     //todo решение на базе StringBuilder надежное и простое, особенно если отчет небольшой,
     //но с более сложными макетами лучше использовать что-то по типу Razor'а
     //интерфейс добавлен сразу т.к. часто требуется иметь несколько версий отчетов - txt/html/csv
-    public class ReportPlainTextFormatter : IReportFormatter
+    internal sealed class ReportPlainTextFormatter : IReportFormatter
     {
         private const string SectionSeparator = "--------------------------------------------";
         private const string SpaceAfterEmployeeName = "         ";
@@ -35,7 +35,7 @@ namespace ReportService.Domain.Report
 
         private void AppendDateHeader(ReportData data)
         {
-            sbContent.AppendLine(new DateTime(data.Year, data.Month, 1).ToString("MMMMMM", (IFormatProvider)CultureInfo.CurrentCulture));
+            sbContent.AppendLine(new DateTime(data.Year, data.Month, 1).ToString("MMMM yyyy", new CultureInfo("Ru-ru")));
             AppendSectionSeparator();
         }
 

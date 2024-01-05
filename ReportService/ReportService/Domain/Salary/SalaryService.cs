@@ -1,37 +1,34 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace ReportService.Domain.Salary
 {
-    public class SalaryService
+    internal sealed class SalaryService : ISalaryService
     {
+        private readonly Uri baseUri;
+        private readonly HttpClient client;
+        public SalaryService(Uri baseUri)
+        {
+            this.baseUri = baseUri;
+
+            // todo Заменить на IHttpClientFactory после обновления на Core 3.1 или выше
+            this.client = HttpClientFactory.Create();
+        }
+
         public async Task<int> GetEmployeeSalaryByInnBuh(string inn, string employeeBuhCode)
         {
-            //todo использовать refit или аналогичную либо будет удобнее
-            //в рамках тестового оставляю почти как есть, лишь меня на async
-            //и добавляю вызов Dispose
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create($"http://salary.local/api/empcode/{inn}");
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = WebRequestMethods.Http.Post;
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                string json = JsonConvert.SerializeObject(new { employeeBuhCode });
-                await streamWriter.WriteAsync(json);
-                await streamWriter.FlushAsync();
-                streamWriter.Close();
-            }
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            string responseText;
-            using (var reader = new StreamReader(httpResponse.GetResponseStream(), true))
-            {
-                responseText = await reader.ReadToEndAsync();
-            }
-
-            return (int)decimal.Parse(responseText);
+            //todo можно прикрутить Polly
+            //todo из-за старого кора за неимением возможности заинжектить фабрику, используем вот это
+            var resp = await client.PostAsJsonAsync(new Uri(this.baseUri, $"{inn}/"), new { employeeBuhCode });
+            resp.EnsureSuccessStatusCode();
+            var content = await resp.Content.ReadAsStringAsync();
+            var salary = (int)decimal.Parse(content);
+            return salary;
         }
     }
 }

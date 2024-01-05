@@ -6,17 +6,15 @@ using ReportService.Domain.Report.Models;
 
 namespace ReportService.Domain.Report
 {
-    //todo интерфейсы вместо конкретных реализаций всегда можно добавить позже
-    //когда станет понятно, что их точно >1
-    public class ReportBuilderService<T>
-        where T : IReportFormatter
+    internal sealed class ReportBuilderService : IReportBuilderService
     {
         private readonly IEmployeeService employeeService;
-        private readonly T reportFormatter;
+        private readonly IReportFormatter reportFormatter;
 
-        public ReportBuilderService(IEmployeeService employeeService)
+        public ReportBuilderService(IEmployeeService employeeService, IReportFormatter reportFormatter)
         {
             this.employeeService = employeeService;
+            this.reportFormatter = reportFormatter;
         }
 
         /// <summary>
