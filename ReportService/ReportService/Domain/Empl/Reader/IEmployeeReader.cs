@@ -6,6 +6,6 @@ namespace ReportService.Domain.Empl.Reader
 {
     internal interface IEmployeeReader
     {
-        Task<List<EmployeeDb>> ReadEmployeesFromDb();
+        Task<List<EmployeeDb>> ReadEmployees();
     }
 }

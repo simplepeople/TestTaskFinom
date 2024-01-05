@@ -20,7 +20,7 @@ namespace ReportService.Domain.Salary
             this.client = HttpClientFactory.Create();
         }
 
-        public async Task<int> GetEmployeeSalaryByInnBuh(string inn, string employeeBuhCode)
+        public async Task<int> GetEmployeeSalary(string inn, string employeeBuhCode)
         {
             //todo можно прикрутить Polly
             //todo из-за старого кора за неимением возможности заинжектить фабрику, используем вот это

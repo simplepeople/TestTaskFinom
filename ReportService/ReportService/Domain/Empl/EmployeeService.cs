@@ -27,7 +27,7 @@ namespace ReportService.Domain.Empl
 
         public async Task<IEnumerable<Employee>> GetAll()
         {
-            var employeesDb = await this.employeeReader.ReadEmployeesFromDb();
+            var employeesDb = await this.employeeReader.ReadEmployees();
 
             var employees = await this.GetEmployees(employeesDb);
 
@@ -38,13 +38,13 @@ namespace ReportService.Domain.Empl
         {
             //todo для улучшения производительности (при n сотрудников 2n запросов - многовато в целом)
             //с учетом тротлинга обоих сервисов можно попытаться отсылать запросы асинхронно пачками, а не последовательно по одному
-            //или же добавлять новую версию контрактов на этих сервисах
+            //или же добавить новые, более удобные для текущего кейса, контракты в сами сервисы
             var employees = new List<Employee>();
             foreach (var employeeDb in employeesDb)
             {
                 var buhCode = await this.buhService.GetEmployeeBuhCode(employeeDb.Inn);
-                var salary = await this.salaryService.GetEmployeeSalaryByInnBuh(employeeDb.Inn, buhCode);
-                employees.Add(new Employee()
+                var salary = await this.salaryService.GetEmployeeSalary(employeeDb.Inn, buhCode);
+                employees.Add(new Employee
                 {
                     Department = employeeDb.Department,
                     Name = employeeDb.Name,

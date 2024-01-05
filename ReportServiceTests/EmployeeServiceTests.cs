@@ -42,14 +42,14 @@ namespace ReportServiceTests
             // Arrange
             var employeeReaderFake = Substitute.For<IEmployeeReader>();
             var dbEmployees = new List<EmployeeDb> { this.dbEmployee };
-            employeeReaderFake.ReadEmployeesFromDb().Returns(new List<EmployeeDb> { this.dbEmployee });
+            employeeReaderFake.ReadEmployees().Returns(new List<EmployeeDb> { this.dbEmployee });
 
             var buhCode = new Faker().Finance.Account(10);
             var buhServiceFake = Substitute.For<IBuhService>();
             buhServiceFake.GetEmployeeBuhCode(dbEmployee.Inn).Returns(Task.FromResult(buhCode));
 
             var salaryServiceFake = Substitute.For<ISalaryService>();
-            salaryServiceFake.GetEmployeeSalaryByInnBuh(this.dbEmployee.Inn, buhCode).Returns(Task.FromResult(this.employee.Salary));
+            salaryServiceFake.GetEmployeeSalary(this.dbEmployee.Inn, buhCode).Returns(Task.FromResult(this.employee.Salary));
 
             var employeeService = new EmployeeService(employeeReaderFake, buhServiceFake, salaryServiceFake);
 
@@ -64,9 +64,9 @@ namespace ReportServiceTests
             employeeActual.Name.Should().Be(this.dbEmployee.Name);
             employeeActual.Salary.Should().Be(this.employee.Salary);
 
-            await employeeReaderFake.Received(1).ReadEmployeesFromDb();
+            await employeeReaderFake.Received(1).ReadEmployees();
             await buhServiceFake.Received(1).GetEmployeeBuhCode(this.dbEmployee.Inn);
-            await salaryServiceFake.Received(1).GetEmployeeSalaryByInnBuh(dbEmployee.Inn, buhCode);
+            await salaryServiceFake.Received(1).GetEmployeeSalary(dbEmployee.Inn, buhCode);
         }
     }
 }

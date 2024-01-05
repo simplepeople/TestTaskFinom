@@ -16,7 +16,7 @@ namespace ReportService.Domain.Empl.Reader
             this.connectionString = connectionString;
         }
 
-        public async Task<List<EmployeeDb>> ReadEmployeesFromDb()
+        public async Task<List<EmployeeDb>> ReadEmployees()
         {
             var employees = new List<EmployeeDb>();
 

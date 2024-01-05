@@ -4,6 +4,6 @@ namespace ReportService.Domain.Salary
 {
     internal interface ISalaryService
     {
-        Task<int> GetEmployeeSalaryByInnBuh(string inn, string employeeBuhCode);
+        Task<int> GetEmployeeSalary(string inn, string employeeBuhCode);
     }
 }
